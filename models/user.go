@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"example.com/rest-api/db"
+	"example.com/rest-api/utils"
 )
 
 type User struct {
@@ -22,7 +23,11 @@ func (u *User) Save() error {
 
 	defer stmt.Close()
 
-	result, err := stmt.Exec(u.Email, u.Password)
+	hpass, err := utils.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
+	result, err := stmt.Exec(u.Email, hpass)
 	if err != nil {
 		return fmt.Errorf("failed to execute query: %w", err)
 	}
