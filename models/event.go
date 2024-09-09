@@ -13,7 +13,7 @@ type Event struct {
 	Description string    `binding:"required" json:"description"`
 	Location    string    `binding:"required" json:"location"`
 	DateTime    time.Time `binding:"required" json:"date_time"`
-	UserId      int       `json:"user_id"`
+	UserId      int64     `json:"user_id"`
 }
 
 // Global slice to store events
