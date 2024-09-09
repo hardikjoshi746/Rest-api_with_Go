@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	"example.com/rest-api/db"
@@ -38,5 +39,24 @@ func (u *User) Save() error {
 	}
 
 	u.ID = userId
+	return nil
+}
+
+func (u User) ValidateCridential() error {
+	query := "SELECT id, password FROM users WHERE email = ?"
+	row := db.DB.QueryRow(query, u.Email)
+
+	var retrievePassword string
+	err := row.Scan(&u.ID, &retrievePassword)
+
+	if err != nil {
+		return errors.New("credentials incorrect")
+	}
+
+	passIsValid := utils.CheckPassword(u.Password, retrievePassword)
+
+	if !passIsValid {
+		return errors.New("credentials incorrect")
+	}
 	return nil
 }
